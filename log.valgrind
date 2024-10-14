@@ -1,0 +1,332 @@
+==17569== Memcheck, a memory error detector
+==17569== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==17569== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==17569== Command: ./mdu Dir_1
+==17569== Parent PID: 17547
+==17569== 
+==17569== error calling PR_SET_PTRACER, vgdb might block
+==17569== Thread 2:
+==17569== Invalid read of size 1
+==17569==    at 0x484ED16: strlen (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x48D9D30: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a8f550 is 0 bytes inside a block of size 6 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x1099F9: queue_initialize (mdu.c:71)
+==17569==    by 0x1097BF: main (mdu.c:19)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x484ED24: strlen (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x48D9D30: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a8f551 is 1 bytes inside a block of size 6 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x1099F9: queue_initialize (mdu.c:71)
+==17569==    by 0x1097BF: main (mdu.c:19)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x48F0FB0: _IO_default_xsputn (genops.c:394)
+==17569==    by 0x48F0FB0: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a8f550 is 0 bytes inside a block of size 6 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x1099F9: queue_initialize (mdu.c:71)
+==17569==    by 0x1097BF: main (mdu.c:19)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x48F0FBE: _IO_default_xsputn (genops.c:393)
+==17569==    by 0x48F0FBE: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a8f552 is 2 bytes inside a block of size 6 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x1099F9: queue_initialize (mdu.c:71)
+==17569==    by 0x1097BF: main (mdu.c:19)
+==17569== 
+==17569== Invalid free() / delete / delete[] / realloc()
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a8f550 is 0 bytes inside a block of size 6 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x1099F9: queue_initialize (mdu.c:71)
+==17569==    by 0x1097BF: main (mdu.c:19)
+==17569== 
+==17569== Invalid read of size 8
+==17569==    at 0x48F0F7A: _IO_default_xsputn (genops.c:394)
+==17569==    by 0x48F0F7A: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a97950 is 0 bytes inside a block of size 14 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x10A3BB: handle_directory (du_worker.c:94)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x48F0F0D: _IO_default_xsputn (genops.c:394)
+==17569==    by 0x48F0F0D: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a97958 is 8 bytes inside a block of size 14 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x10A3BB: handle_directory (du_worker.c:94)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x48F0F19: _IO_default_xsputn (genops.c:394)
+==17569==    by 0x48F0F19: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a97959 is 9 bytes inside a block of size 14 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x10A3BB: handle_directory (du_worker.c:94)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x48F0F28: _IO_default_xsputn (genops.c:394)
+==17569==    by 0x48F0F28: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a9795a is 10 bytes inside a block of size 14 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x10A3BB: handle_directory (du_worker.c:94)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x48F0F37: _IO_default_xsputn (genops.c:394)
+==17569==    by 0x48F0F37: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a9795b is 11 bytes inside a block of size 14 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x10A3BB: handle_directory (du_worker.c:94)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569== 
+==17569== Invalid read of size 1
+==17569==    at 0x48F0F46: _IO_default_xsputn (genops.c:394)
+==17569==    by 0x48F0F46: _IO_default_xsputn (genops.c:370)
+==17569==    by 0x48DA00B: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48DA00B: __vfprintf_internal (vfprintf-internal.c:1517)
+==17569==    by 0x48EB499: __vsnprintf_internal (vsnprintf.c:114)
+==17569==    by 0x48C3855: snprintf (snprintf.c:31)
+==17569==    by 0x10A38C: handle_directory (du_worker.c:91)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Address 0x4a9795c is 12 bytes inside a block of size 14 free'd
+==17569==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x10A39B: handle_directory (du_worker.c:93)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569==  Block was alloc'd at
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x490B58E: strdup (strdup.c:42)
+==17569==    by 0x109E25: push_q (queue.c:41)
+==17569==    by 0x10A3BB: handle_directory (du_worker.c:94)
+==17569==    by 0x10A0FA: du_worker_thread (du_worker.c:46)
+==17569==    by 0x48F7AC2: start_thread (pthread_create.c:442)
+==17569==    by 0x4988A03: clone (clone.S:100)
+==17569== 
+==17569== 
+==17569== Process terminating with default action of signal 2 (SIGINT)
+==17569==    at 0x48F4117: __futex_abstimed_wait_common64 (futex-internal.c:57)
+==17569==    by 0x48F4117: __futex_abstimed_wait_common (futex-internal.c:87)
+==17569==    by 0x48F4117: __futex_abstimed_wait_cancelable64 (futex-internal.c:139)
+==17569==    by 0x48F9623: __pthread_clockjoin_ex (pthread_join_common.c:105)
+==17569==    by 0x109AC5: worker_join (mdu.c:86)
+==17569==    by 0x10983F: main (mdu.c:41)
+==17569== 
+==17569== HEAP SUMMARY:
+==17569==     in use at exit: 1,384 bytes in 4 blocks
+==17569==   total heap usage: 31 allocs, 31 frees, 135,304 bytes allocated
+==17569== 
+==17569== Thread 1:
+==17569== 32 bytes in 1 blocks are still reachable in loss record 1 of 4
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x1098F1: worker_state_initialize (mdu.c:51)
+==17569==    by 0x10982B: main (mdu.c:33)
+==17569== 
+==17569== 56 bytes in 1 blocks are still reachable in loss record 2 of 4
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x109CFB: create_q (queue.c:4)
+==17569==    by 0x1096BC: main (mdu.c:14)
+==17569== 
+==17569== 272 bytes in 1 blocks are possibly lost in loss record 3 of 4
+==17569==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x40147D9: calloc (rtld-malloc.h:44)
+==17569==    by 0x40147D9: allocate_dtv (dl-tls.c:375)
+==17569==    by 0x40147D9: _dl_allocate_tls (dl-tls.c:634)
+==17569==    by 0x48F87B4: allocate_stack (allocatestack.c:430)
+==17569==    by 0x48F87B4: pthread_create@@GLIBC_2.34 (pthread_create.c:647)
+==17569==    by 0x109984: worker_state_initialize (mdu.c:62)
+==17569==    by 0x10982B: main (mdu.c:33)
+==17569== 
+==17569== 1,024 bytes in 1 blocks are still reachable in loss record 4 of 4
+==17569==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==17569==    by 0x48E1BA3: _IO_file_doallocate (filedoalloc.c:101)
+==17569==    by 0x48F0CDF: _IO_doallocbuf (genops.c:347)
+==17569==    by 0x48EFF5F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:744)
+==17569==    by 0x48EE6D4: _IO_new_file_xsputn (fileops.c:1243)
+==17569==    by 0x48EE6D4: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1196)
+==17569==    by 0x48D814C: outstring_func (vfprintf-internal.c:239)
+==17569==    by 0x48D814C: __vfprintf_internal (vfprintf-internal.c:1263)
+==17569==    by 0x48C379E: printf (printf.c:33)
+==17569==    by 0x109DEE: push_q (queue.c:33)
+==17569==    by 0x1099F9: queue_initialize (mdu.c:71)
+==17569==    by 0x1097BF: main (mdu.c:19)
+==17569== 
+==17569== LEAK SUMMARY:
+==17569==    definitely lost: 0 bytes in 0 blocks
+==17569==    indirectly lost: 0 bytes in 0 blocks
+==17569==      possibly lost: 272 bytes in 1 blocks
+==17569==    still reachable: 1,112 bytes in 3 blocks
+==17569==         suppressed: 0 bytes in 0 blocks
+==17569== 
+==17569== For lists of detected and suppressed errors, rerun with: -s
+==17569== ERROR SUMMARY: 67 errors from 12 contexts (suppressed: 0 from 0)
