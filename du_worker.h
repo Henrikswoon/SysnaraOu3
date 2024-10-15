@@ -26,10 +26,12 @@ typedef struct {
 } extended_Thread;
 
 typedef struct {
-    atomic_long* dir_size;
+    atomic_long* results;
+    atomic_short* active_threads;
     sem_t* sem_queue;
     Queue* queued_entries;
     extended_Thread* self;
+    int nthreads;
 } WorkerArgs;
 
 typedef enum {
@@ -45,7 +47,7 @@ typedef struct {
 
 void* du_worker_thread(void* args);
 Resource open_resource(const char* path);
-int handle_directory(DIR* dir, char* path, Queue* q, sem_t* sem_queue);
+int handle_directory(DIR* dir, char* path, Queue* q, sem_t* sem_queue, int index_working_size);
 int handle_file(char* path);
 int calculate();
 

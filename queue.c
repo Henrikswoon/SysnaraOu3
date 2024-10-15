@@ -20,7 +20,7 @@ Queue* create_q(void)
 
 void destroy_q(Queue *header)
 {
-    while(pop_q(header) != NULL);
+    while(pop_q(header, NULL) != NULL);
     if(header != NULL){
         pthread_mutex_destroy(&header->mutex);
         free(header);
@@ -28,7 +28,7 @@ void destroy_q(Queue *header)
     header = NULL;
 }
 
-void push_q(Queue *header, char* entry, sem_t* sem)
+void push_q(Queue *header, char* entry, sem_t* sem, int index_working_size)
 {
     printf("[q]\tPushing '%s' to queue.\n", entry);
     Entry *e = malloc(sizeof(Entry));
@@ -37,7 +37,7 @@ void push_q(Queue *header, char* entry, sem_t* sem)
         exit(EXIT_FAILURE);
     }
 
-
+    e->index_working_size = index_working_size;
     e->path = strdup(entry);
     e->next = NULL;
 
@@ -57,18 +57,21 @@ void push_q(Queue *header, char* entry, sem_t* sem)
     pthread_mutex_unlock(&header->mutex);
 }
 
-char* pop_q(Queue *header)
+char* pop_q(Queue *header, int* index_working_size)
 {
     pthread_mutex_lock(&header->mutex);
     Entry *head = header->head;
+    if(index_working_size != NULL && head != NULL){
+        *index_working_size = head -> index_working_size;  
+    }
     if(head == NULL){
         pthread_mutex_unlock(&header->mutex);
         return NULL;
     }
     else{
         header -> head = head -> next;
-        
         char* d = head -> path;
+
         printf("[q]\tPopping '%s' from the queue.\n", d);
         free(head);
         pthread_mutex_unlock(&header->mutex);

@@ -6,9 +6,11 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <string.h>
+#include <stdatomic.h>
 
 typedef struct Entry {
     struct Entry *next;
+    int index_working_size;
     char* path;
 } Entry;
 
@@ -20,8 +22,8 @@ typedef struct Queue {
 
 Queue* create_q(void);
 void destroy_q(Queue *header);
-void push_q(Queue *header, char* entry, sem_t* sem);
-char* pop_q(Queue *header);
+void push_q(Queue *header, char* entry, sem_t* sem, int index_working_size);
+char* pop_q(Queue *header, int* index_working_size);
 int is_queue_empty(Queue* header);
 
 #endif

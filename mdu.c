@@ -2,9 +2,10 @@
 int main(int argc, char* argv[]){
     int nthreads = 1;
     sem_t sem_queue;
-    atomic_long dir_size = 0;
     int optind = handle_user_input(argc, argv, &nthreads);
     extended_Thread workers[nthreads];
+    atomic_short active_threads = nthreads;
+
 
     if(sem_init(&sem_queue, 0, 0) == -1){
         perror("semaphore");
@@ -16,35 +17,39 @@ int main(int argc, char* argv[]){
     int npaths = argc - optind;
     char* paths[npaths];
     slice(argv, optind, argc, paths);
+    atomic_long results[npaths];
     queue_initialize(
         queued_entries, 
         paths, 
         npaths, 
         &sem_queue
     );
-    
-    int sem_value;
-    if (sem_getvalue(&sem_queue, &sem_value) == -1) {
-        perror("sem_getvalue");
-    } else {
-        printf("Semaphore current value: %d\n", sem_value);
-    }
 
     worker_state_initialize(    
         workers, 
         nthreads, 
-        &dir_size, 
+        &active_threads,
+        results, 
         &sem_queue, 
         queued_entries
     );
 
     worker_join(workers, nthreads);
     destroy_q(queued_entries);
-    
-    printf("Total file size: %ld\n", dir_size);
+
+    for(int i = 0; i < npaths; i++){
+        printf("arg: %s, size: %ld\n", paths[i], results[i]);
+    } 
 }
 
-void worker_state_initialize(extended_Thread workers[], int nthreads, atomic_long* dir_size, sem_t* sem_queue, Queue* queued_entries){
+void worker_state_initialize(
+        extended_Thread workers[], 
+        int nthreads, 
+        atomic_short* active_threads, 
+        atomic_long results[], 
+        sem_t* sem_queue, 
+        Queue* queued_entries
+    ){
     for(int i = 0; i < nthreads; i++){
         workers[i].state = RUNNING;
 
@@ -54,10 +59,12 @@ void worker_state_initialize(extended_Thread workers[], int nthreads, atomic_lon
             exit(EXIT_FAILURE);
         }
 
-        args->dir_size          = dir_size;
+        args->results           = results;
+        args->active_threads    = active_threads;
         args->sem_queue         = sem_queue;
         args->queued_entries    = queued_entries;
         args->self              = &workers[i];
+        args->nthreads          = nthreads;
     
         int result = pthread_create(&workers[i].threadID, NULL, du_worker_thread, (void*)args);
         if(result != 0){
@@ -68,7 +75,7 @@ void worker_state_initialize(extended_Thread workers[], int nthreads, atomic_lon
 }
 
 void queue_initialize(Queue* q, char* path[], int size, sem_t* sem_queue){
-    for(int i = 0; i < size; i++) push_q(q, path[i], sem_queue);
+    for(int i = 0; i < size; i++) push_q(q, path[i], sem_queue, i);
 }
 
 void slice(char* strings[], int start, int len, char* result[]){
@@ -90,17 +97,6 @@ void worker_join(extended_Thread workers[], int nthreads){
         }
     }
 }
-
-/*
-pthread_t get_worker_thread(extended_Thread workers[], int size){
-    int i = 0;
-    while(workers[i].state != RUNNING){
-        workers[i].state = RUNNING;
-        return workers[i].threadID;
-    }
-    return NULL;
-}
-*/
 
 int handle_user_input(int argc, char* argv[], int* nthreads){
     int opt;

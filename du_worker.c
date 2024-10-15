@@ -1,4 +1,5 @@
 #include "du_worker.h"
+
 /**
  * @param args 
  * - atomic_long Tracks the total calculated size
@@ -12,13 +13,25 @@
 void* du_worker_thread(void* arg){
     WorkerArgs* args = (WorkerArgs*)arg;
     int i = 0;
+    int finished = 0;
     while(++i){
-        if (is_queue_empty(args->queued_entries)) {
-            args->self->state = NOT_RUNNING; 
+
+        //Assume thread is going to wait.
+        atomic_fetch_add(args->active_threads,-1);
+        printf("\n\nactive threads: %hu\nis_queue_empty: %d\n\n", *args->active_threads, is_queue_empty(args->queued_entries));
+        if (is_queue_empty(args->queued_entries) && *args -> active_threads == 0) {
+            finished = 1;
+            for(int i = 0; i < args->nthreads; i++) sem_post(args->sem_queue);
         }
 
         printf("===\n[%lu] waiting... iteration %d\n", (unsigned long) args->self->threadID, i);
         sem_wait(args->sem_queue);
+        if(finished) pthread_exit(0);
+
+
+        //Set thread as active.
+        atomic_fetch_add(args->active_threads,+1);
+
 
         printf("[%lu] entering... iteration %d\n===\n", (unsigned long) args->self->threadID, i);
         args->self->state = RUNNING;
@@ -26,7 +39,8 @@ void* du_worker_thread(void* arg){
         char* path;
 
         //If the queue is empty, wait
-        if((path = pop_q(args->queued_entries)) == NULL){
+        int index_working_size = 0;
+        if((path = pop_q(args->queued_entries, &index_working_size)) == NULL){
             printf("[!q] queue was null, continue.\n");
             continue;
         } 
@@ -43,18 +57,19 @@ void* du_worker_thread(void* arg){
         switch (r.type) {
             case TYPE_DIR:
                 dir = (DIR*) r.resource;
-                size = handle_directory(dir, path, args->queued_entries, args->sem_queue);
+                size = handle_directory(dir, path, args->queued_entries, args->sem_queue, index_working_size);
                 closedir(dir);
 
-                atomic_fetch_add(args->dir_size, size);
+                printf("[!!!!!] index_working_size: %d\n", index_working_size);
+                atomic_fetch_add(&(args -> results[index_working_size]), size);
                 break;
         
             case TYPE_FILE:
                 file = (FILE*) r.resource;
                 size = handle_file(path);
                 fclose(file);
-
-                atomic_fetch_add(args->dir_size, size);
+                
+                atomic_fetch_add(&(args -> results[index_working_size]), size);
                 break;
 
             default:
@@ -70,7 +85,7 @@ void* du_worker_thread(void* arg){
 /**
  * Should push discovered files and directories to the queue
  */
-int handle_directory(DIR* dir, char* base_path, Queue* q, sem_t* sem_queue){
+int handle_directory(DIR* dir, char* base_path, Queue* q, sem_t* sem_queue, int index_working_size){
     printf("[worker] Handle directory: %s\n", base_path);
     int dir_size;
     struct dirent *dp;
@@ -91,7 +106,7 @@ int handle_directory(DIR* dir, char* base_path, Queue* q, sem_t* sem_queue){
         snprintf(full_path, sizeof(full_path), "%s/%s", base_path, dp->d_name);
 
         free(base_path);
-        push_q(q, full_path, sem_queue);
+        push_q(q, full_path, sem_queue, index_working_size);
     }
     return dir_size;
 }
@@ -102,7 +117,7 @@ int handle_file(char* path){
         perror("lstat");
         exit(EXIT_FAILURE);
     }
-    printf("[RESULT!] file at: %s, is size %ld\n", path, stat.st_size);
+    printf("[RESULT!] file at: %s, is size %ld\n", path, stat.st_blocks);
     free(path);
     return stat.st_size;
 }
