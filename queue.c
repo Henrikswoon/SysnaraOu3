@@ -30,7 +30,6 @@ void destroy_q(Queue *header)
 
 void push_q(Queue *header, char* entry, sem_t* sem, int index_working_size)
 {
-    printf("[q]\tPushing '%s' to queue.\n", entry);
     Entry *e = malloc(sizeof(Entry));
     if(e == NULL){
         destroy_q(header);
@@ -72,7 +71,6 @@ char* pop_q(Queue *header, int* index_working_size)
         header -> head = head -> next;
         char* d = head -> path;
 
-        printf("[q]\tPopping '%s' from the queue.\n", d);
         free(head);
         pthread_mutex_unlock(&header->mutex);
         return d;
@@ -83,6 +81,5 @@ int is_queue_empty(Queue* header){
     pthread_mutex_lock(&header->mutex);
     int is_empty = (header->head == NULL);
     pthread_mutex_unlock(&header->mutex);
-
     return is_empty;
 }

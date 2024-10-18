@@ -20,10 +20,7 @@ typedef enum {
     RUNNING,
 } ThreadState;
 
-typedef struct {
-    pthread_t threadID;
-    ThreadState state;
-} extended_Thread;
+typedef struct extended_Thread extended_Thread;
 
 typedef struct {
     atomic_long* results;
@@ -33,6 +30,11 @@ typedef struct {
     extended_Thread* self;
     int nthreads;
 } WorkerArgs;
+
+struct extended_Thread {
+    pthread_t threadID;
+    WorkerArgs* args;
+};
 
 typedef enum {
     TYPE_FILE,

@@ -17,7 +17,10 @@ int main(int argc, char* argv[]){
     int npaths = argc - optind;
     char* paths[npaths];
     slice(argv, optind, argc, paths);
+    
     atomic_long results[npaths];
+    memset(results, 0, sizeof(atomic_long) * npaths);
+
     queue_initialize(
         queued_entries, 
         paths, 
@@ -35,6 +38,7 @@ int main(int argc, char* argv[]){
     );
 
     worker_join(workers, nthreads);
+    sem_destroy(&sem_queue);
     destroy_q(queued_entries);
 
     for(int i = 0; i < npaths; i++){
@@ -51,22 +55,20 @@ void worker_state_initialize(
         Queue* queued_entries
     ){
     for(int i = 0; i < nthreads; i++){
-        workers[i].state = RUNNING;
-
-        WorkerArgs* args = malloc(sizeof(WorkerArgs));
-        if(args == NULL){
+        workers[i].args = (WorkerArgs*) malloc(sizeof(WorkerArgs));
+        if(workers[i].args == NULL){
             perror("malloc");
             exit(EXIT_FAILURE);
         }
 
-        args->results           = results;
-        args->active_threads    = active_threads;
-        args->sem_queue         = sem_queue;
-        args->queued_entries    = queued_entries;
-        args->self              = &workers[i];
-        args->nthreads          = nthreads;
+        workers[i].args->results            = results;
+        workers[i].args->active_threads     = active_threads;
+        workers[i].args->sem_queue          = sem_queue;
+        workers[i].args->queued_entries     = queued_entries;
+        workers[i].args->self               = &workers[i];
+        workers[i].args->nthreads           = nthreads;
     
-        int result = pthread_create(&workers[i].threadID, NULL, du_worker_thread, (void*)args);
+        int result = pthread_create(&workers[i].threadID, NULL, du_worker_thread, (void*) workers[i].args);
         if(result != 0){
             //fprintf(stderr, "Error creating worker thread: %d", workers[i].threadID);
             exit(EXIT_FAILURE);
@@ -92,6 +94,7 @@ void worker_join(extended_Thread workers[], int nthreads){
         void* status;
         pthread_join(workers[i].threadID, &status);
         printf("Joining %lu\n", (unsigned long) workers[i].threadID);
+        free(workers[i].args);
         if (status != 0) {
             exit(EXIT_FAILURE);
         }
@@ -131,9 +134,4 @@ int handle_user_input(int argc, char* argv[], int* nthreads){
         }
     }
     return optind;
-}
-
-int all_workers_idle(extended_Thread workers[], int size){
-    for (int i = 0; i < size; i++) if(workers[i].state == RUNNING) return false;
-    return true;
 }
