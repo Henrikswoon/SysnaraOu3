@@ -5,7 +5,10 @@ OBJECTS = $(SOURCES:.c=.o)
 TARGET = mdu
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $(TARGET)
+	$(CC) -lm -pthread -o $(TARGET) $(OBJECTS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(TARGET) *.o
+	rm -f $(TARGET) *.o *.valgrind

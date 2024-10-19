@@ -36,10 +36,19 @@ struct extended_Thread {
     WorkerArgs* args;
 };
 
+/**
+ * @note Permission denied occupies the initial bit and determines whether permission was allowed. 
+ */
 typedef enum {
-    TYPE_FILE,
-    TYPE_DIR,
-    TYPE_UNKNOWN
+    PERMISSION_DENIED       = 1 << 0,
+    TYPE_FILE               = 1 << 1,
+    TYPE_DIR                = 1 << 2,
+    TYPE_LNK                = 1 << 3,
+    TYPE_UNKNOWN            = 1 << 4,
+
+    DENIED_FILE             = TYPE_FILE | PERMISSION_DENIED,
+    DENIED_DIR              = TYPE_DIR  | PERMISSION_DENIED,
+    DENIED_LNK              = TYPE_LNK  | PERMISSION_DENIED, 
 } ResourceType;
 
 typedef struct {
@@ -51,6 +60,9 @@ void* du_worker_thread(void* args);
 Resource open_resource(const char* path);
 int handle_directory(DIR* dir, char* path, Queue* q, sem_t* sem_queue, int index_working_size);
 int handle_file(char* path);
-int calculate();
+int handle_link(char* path);
+int getSize(struct stat path_stat);
+void setType(int permission, Resource* r, ResourceType t);
+
 
 #endif

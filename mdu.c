@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
     destroy_q(queued_entries);
 
     for(int i = 0; i < npaths; i++){
-        printf("arg: %s, size: %ld\n", paths[i], results[i]);
+        printf("%ld\t%s\n", results[i], paths[i]);
     } 
 }
 
@@ -70,7 +70,6 @@ void worker_state_initialize(
     
         int result = pthread_create(&workers[i].threadID, NULL, du_worker_thread, (void*) workers[i].args);
         if(result != 0){
-            //fprintf(stderr, "Error creating worker thread: %d", workers[i].threadID);
             exit(EXIT_FAILURE);
         }
     }
@@ -93,7 +92,6 @@ void worker_join(extended_Thread workers[], int nthreads){
     for(int i = 0; i < nthreads; i++){
         void* status;
         pthread_join(workers[i].threadID, &status);
-        printf("Joining %lu\n", (unsigned long) workers[i].threadID);
         free(workers[i].args);
         if (status != 0) {
             exit(EXIT_FAILURE);

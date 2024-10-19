@@ -27,7 +27,7 @@ void* du_worker_thread(void* arg){
         sem_wait(args->sem_queue);
         if(finished){
             free(path);
-            pthread_exit(0);
+            pthread_exit(EXIT_SUCCESS);
         } 
 
         //Set thread as active.
@@ -42,32 +42,43 @@ void* du_worker_thread(void* arg){
 
         Resource r = open_resource(path);
         if(r.type == TYPE_UNKNOWN){
-            fprintf(stderr,"---\nFUCK!!!!!!!\n");
+            fprintf(stderr,"resource at %s was of an unexpected type, exiting.\n", path);
             exit(EXIT_FAILURE);
         } 
 
         int size;
         DIR* dir; 
-        FILE* file;
         switch (r.type) {
             case TYPE_DIR:
                 dir = (DIR*) r.resource;
                 size = handle_directory(dir, path, args->queued_entries, args->sem_queue, index_working_size);
                 closedir(dir);
-
                 atomic_fetch_add(&(args -> results[index_working_size]), size);
                 break;
-        
+            
+            case DENIED_DIR:
+                fprintf(stderr, "du: cannot read directory '%s': Permission denied\n", path);
+                break;
+
+
             case TYPE_FILE:
-                file = (FILE*) r.resource;
-                size = handle_file(path);
-                fclose(file);
-                
+                size = handle_file(path);                
                 atomic_fetch_add(&(args -> results[index_working_size]), size);
+                break;
+
+            case DENIED_FILE:
+                break;
+
+            case TYPE_LNK:
+                size = handle_link(path);
+                atomic_fetch_add(&(args -> results[index_working_size]), size);
+                break;
+
+            case DENIED_LNK:
                 break;
 
             default:
-                fprintf(stderr, "Resource wasn't assigned a type, exiting.");
+                fprintf(stderr, "Resource wasn't assigned a type, exiting.\n");
                 exit(EXIT_FAILURE);
                 break;
         }
@@ -80,6 +91,7 @@ void* du_worker_thread(void* arg){
  * Should push discovered files and directories to the queue
  */
 int handle_directory(DIR* dir, char* base_path, Queue* q, sem_t* sem_queue, int index_working_size){
+    if (dir == NULL) return 0;
     int dir_size;
     struct dirent *dp;
     struct stat stat;
@@ -87,7 +99,7 @@ int handle_directory(DIR* dir, char* base_path, Queue* q, sem_t* sem_queue, int 
         perror("lstat");
         exit(EXIT_FAILURE);
     }
-    dir_size = stat.st_size;
+    dir_size = getSize(stat);
 
     while((dp = readdir(dir)) != NULL){
         //skip '.','..'
@@ -109,6 +121,15 @@ int handle_file(char* path){
         perror("lstat");
         exit(EXIT_FAILURE);
     }
+    return getSize(stat);
+}
+
+int handle_link(char* path){
+    struct stat stat;
+    if(lstat(path, &stat) == -1){
+        perror("lstat");
+        exit(EXIT_FAILURE);
+    }
     return stat.st_size;
 }
 
@@ -116,38 +137,56 @@ int handle_file(char* path){
 Resource open_resource(const char* path){
     struct stat path_stat;
     Resource r;
+    int permission = access(path, R_OK) == 0;     
     r.resource  = NULL;
     r.type      = TYPE_UNKNOWN;
-
+    
     if(lstat(path, &path_stat) == -1){
         perror("lstat");
         exit(EXIT_FAILURE);
     }
+    
+    else if(S_ISLNK(path_stat.st_mode)){
+        setType(permission, &r, TYPE_LNK);
+        return r;
+    }
+    
+    else if(S_ISDIR(path_stat.st_mode)){
+        if(!permission){
+            setType(permission, &r, TYPE_DIR);
+            return r;
+        }else{
+            r.resource = opendir(path);
+            if(r.resource == NULL){
+                perror("opendir");
+                exit(EXIT_FAILURE);
+            } 
+            else {
+                setType(permission, &r, TYPE_DIR);
+                return r;
+            }
+        } 
+    }
+    
+    else if(S_ISREG(path_stat.st_mode)){
+        setType(permission, &r, TYPE_FILE);
+        return r;
+    }
 
-    if(S_ISDIR(path_stat.st_mode)){
-        r.resource = opendir(path);
-        if(r.resource == NULL){
-            perror("opendir");
-            exit(EXIT_FAILURE);
-        } 
-        else {
-            r.type = TYPE_DIR;
-            return r;
-        }
-    }
-    
-    if(S_ISREG(path_stat.st_mode)){
-        r.resource = fopen(path, "r");
-        if(r.resource == NULL){
-            perror("fopen");
-            exit(EXIT_FAILURE);
-        } 
-        else {
-            r.type = TYPE_FILE;
-            return r;
-        }
-    }
-    
     return r;
- }
+}
+
+/**
+ * @brief   setType is a helper function which assigns ResourceType to a Resource. 
+ *          If permission was disallowed, the initial bit is set.
+ * @note    setType is inline to ensure there are no unnecessary context switches
+ */
+inline void setType(int permission, Resource* r, ResourceType t){
+    if(permission) r->type = t;
+    else r->type = t | PERMISSION_DENIED; 
+}
+
+int getSize(struct stat path_stat){
+    return path_stat.st_blocks;
+}
 
