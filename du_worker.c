@@ -15,14 +15,17 @@ void* du_worker_thread(void* arg){
     int i = 0;
     int finished = 0;
     char* path = NULL;
+    pthread_mutex_t mutex;
     while(++i){
 
         //Assume thread is going to wait.
+        pthread_mutex_lock(&mutex);
         atomic_fetch_add(args->active_threads,-1);
         if (is_queue_empty(args->queued_entries) && *args -> active_threads == 0) {
             finished = 1;
             for(int i = 0; i < args->nthreads; i++) sem_post(args->sem_queue);
         }
+        pthread_mutex_unlock(&mutex);
 
         sem_wait(args->sem_queue);
         if(finished){
