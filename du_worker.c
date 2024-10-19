@@ -58,6 +58,8 @@ void* du_worker_thread(void* arg){
             
             case DENIED_DIR:
                 fprintf(stderr, "du: cannot read directory '%s': Permission denied\n", path);
+                size = handle_file(path);
+                atomic_fetch_add(&(args -> results[index_working_size]), size);
                 break;
 
 
@@ -70,7 +72,7 @@ void* du_worker_thread(void* arg){
                 break;
 
             case TYPE_LNK:
-                size = handle_link(path);
+                size = handle_file(path);
                 atomic_fetch_add(&(args -> results[index_working_size]), size);
                 break;
 
@@ -123,16 +125,6 @@ int handle_file(char* path){
     }
     return getSize(stat);
 }
-
-int handle_link(char* path){
-    struct stat stat;
-    if(lstat(path, &stat) == -1){
-        perror("lstat");
-        exit(EXIT_FAILURE);
-    }
-    return stat.st_size;
-}
-
 
 Resource open_resource(const char* path){
     struct stat path_stat;
