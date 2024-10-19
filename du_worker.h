@@ -29,6 +29,7 @@ typedef struct {
     Queue* queued_entries;
     extended_Thread* self;
     int nthreads;
+    pthread_mutex_t* shared_mutex;
 } WorkerArgs;
 
 struct extended_Thread {
@@ -60,7 +61,6 @@ void* du_worker_thread(void* args);
 Resource open_resource(const char* path);
 int handle_directory(DIR* dir, char* path, Queue* q, sem_t* sem_queue, int index_working_size);
 int handle_file(char* path);
-int handle_link(char* path);
 int getSize(struct stat path_stat);
 void setType(int permission, Resource* r, ResourceType t);
 

@@ -54,6 +54,7 @@ void worker_state_initialize(
         sem_t* sem_queue, 
         Queue* queued_entries
     ){
+    pthread_mutex_t shared_mutex;
     for(int i = 0; i < nthreads; i++){
         workers[i].args = (WorkerArgs*) malloc(sizeof(WorkerArgs));
         if(workers[i].args == NULL){
@@ -67,6 +68,7 @@ void worker_state_initialize(
         workers[i].args->queued_entries     = queued_entries;
         workers[i].args->self               = &workers[i];
         workers[i].args->nthreads           = nthreads;
+        workers[i].args->shared_mutex       = &shared_mutex;
     
         int result = pthread_create(&workers[i].threadID, NULL, du_worker_thread, (void*) workers[i].args);
         if(result != 0){
