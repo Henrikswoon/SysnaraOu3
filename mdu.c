@@ -37,13 +37,15 @@ int main(int argc, char* argv[]){
         queued_entries
     );
 
-    worker_join(workers, nthreads);
+    int status = EXIT_SUCCESS;
+    worker_join(workers, nthreads, &status);
     sem_destroy(&sem_queue);
     destroy_q(queued_entries);
 
     for(int i = 0; i < npaths; i++){
         printf("%ld\t%s\n", results[i], paths[i]);
     } 
+    return status;
 }
 
 void worker_state_initialize(
@@ -54,7 +56,8 @@ void worker_state_initialize(
         sem_t* sem_queue, 
         Queue* queued_entries
     ){
-    pthread_mutex_t shared_mutex;
+    pthread_mutex_t* shared_mutex = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(shared_mutex, NULL);
     for(int i = 0; i < nthreads; i++){
         workers[i].args = (WorkerArgs*) malloc(sizeof(WorkerArgs));
         if(workers[i].args == NULL){
@@ -68,7 +71,7 @@ void worker_state_initialize(
         workers[i].args->queued_entries     = queued_entries;
         workers[i].args->self               = &workers[i];
         workers[i].args->nthreads           = nthreads;
-        workers[i].args->shared_mutex       = &shared_mutex;
+        workers[i].args->shared_mutex       = shared_mutex;
     
         int result = pthread_create(&workers[i].threadID, NULL, du_worker_thread, (void*) workers[i].args);
         if(result != 0){
@@ -89,16 +92,26 @@ void slice(char* strings[], int start, int len, char* result[]){
     } 
 }
 
-//Todo! Fix catching results correctly.
-void worker_join(extended_Thread workers[], int nthreads){
+
+void worker_join(extended_Thread workers[], int nthreads, int* status){
+    pthread_mutex_t* shared_mutex = workers[0].args->shared_mutex;
     for(int i = 0; i < nthreads; i++){
-        void* status;
-        pthread_join(workers[i].threadID, &status);
-        free(workers[i].args);
-        if (status != 0) {
+        void* ret_val;
+        int err;
+        if((err = pthread_join(workers[i].threadID, &ret_val)) != 0){
+            fprintf(stderr, "Failed to join thread %lu, err: %d", workers[i].threadID, err);
             exit(EXIT_FAILURE);
         }
+        free(workers[i].args);
+        if (ret_val != NULL) {
+            //If a non-success has been detected, quit inspecting.
+            if(*status == EXIT_SUCCESS)
+                *status = *(int*)ret_val;
+            free(ret_val);
+        }
     }
+    pthread_mutex_destroy(shared_mutex);
+    free(shared_mutex);
 }
 
 int handle_user_input(int argc, char* argv[], int* nthreads){
